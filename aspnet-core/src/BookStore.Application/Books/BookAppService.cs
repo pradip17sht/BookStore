@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
@@ -22,6 +23,36 @@ namespace BookStore.Books
     {
         public BookAppService(IRepository<Book, Guid> repository) : base(repository)
         {
+        }
+
+        public async Task<BookDto> FindByName(string name)
+        {
+            var queryable = await Repository.GetQueryableAsync();
+            var result =  (from book in queryable
+                          .Where(x => x.Name == name)
+                           select new BookDto
+                           {
+                             Name =book.Name,
+                             Type = book.Type,
+                             PublishDate = book.PublishDate,
+                             Price = book.Price
+                           }).FirstOrDefault();
+            return result;
+        }
+
+        public async Task<List<BookDto>> FindAllByName(string name)
+        {
+            var queryable = await Repository.GetQueryableAsync();
+            var result = (from book in queryable
+                                .Where(x => x.Name == name)
+                                select new BookDto 
+                                { 
+                                    Name =book.Name,
+                                    Type=book.Type,
+                                    PublishDate=book.PublishDate,
+                                    Price=book.Price
+                                }).OrderBy(x => x.Name).ToList();
+            return result;
         }
     }
 }
