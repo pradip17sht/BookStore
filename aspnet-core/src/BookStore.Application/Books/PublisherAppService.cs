@@ -1,5 +1,6 @@
 ﻿using BookStore.AppEntities;
 using BookStore.Books.Dto;
+using BookStore.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +48,9 @@ namespace BookStore.Books
         /// <exception cref="UserFriendlyException"></exception>
         public async Task<BookOutputDto> CreateBookAsync(CreateUpdateBookDto inputDto)
         {
+            var validateInput = ValidateInput(inputDto);
+            if (validateInput.Status == false)
+                throw new UserFriendlyException(validateInput.Message, "403");
             try
             {
                 var _book = new Book
@@ -80,6 +84,10 @@ namespace BookStore.Books
         /// <exception cref="UserFriendlyException"></exception>
         public async Task<BookOutputDto> UpdateBookAsync(CreateUpdateBookDto inputDto)
         {
+            var validateInput = ValidateInput(inputDto);
+            if (validateInput.Status == false)
+                throw new UserFriendlyException(validateInput.Message, "403");
+
             var existingBook = await _bookRepository.FirstOrDefaultAsync(x => x.Id == inputDto.Id);
             try
             {
@@ -125,6 +133,23 @@ namespace BookStore.Books
             catch (Exception ex)
             {
                 throw new UserFriendlyException(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Validates all the properties of <paramref name="inputDto"/>.
+        /// </summary>
+        /// <param name="inputDto"></param>
+        /// <returns>A <see cref="ValidatorDto"/> object.</returns>
+        public static ValidatorDto ValidateInput(CreateUpdateBookDto inputDto)
+        {
+            if (string.IsNullOrEmpty(inputDto.Name))
+            {
+                return new ValidatorDto(false, "Name is required.");
+            }
+            else
+            {
+                return new ValidatorDto(true, "Valid");
             }
         }
     }
