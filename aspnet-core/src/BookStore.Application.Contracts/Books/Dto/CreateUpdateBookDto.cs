@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using Volo.Abp.Application.Dtos;
 
 namespace BookStore.Books.Dto
 {
-    public class CreateUpdateBookDto
+    public class CreateUpdateBookDto : AuditedEntityDto<Guid>
     {
         [Required]
         [StringLength(200)]
