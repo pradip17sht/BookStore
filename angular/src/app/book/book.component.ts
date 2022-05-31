@@ -1,6 +1,7 @@
 import { ListService, PagedResultDto } from '@abp/ng.core';
 import { Component, OnInit } from '@angular/core';
-import { BookService, /*BookDto*/ } from '@proxy/books';
+import { BookService } from '@proxy/books';
+import { BookDto } from '@proxy/books/dto/models'
 
 @Component({
   selector: 'app-book',
@@ -9,7 +10,7 @@ import { BookService, /*BookDto*/ } from '@proxy/books';
   providers: [ListService],
 })
 export class BookComponent implements OnInit {
-  book = { items: [], totalCount: 0 } /*as PagedResultDto<BookDto>*/;
+  book = { items: [], totalCount: 0 } as PagedResultDto<BookDto>;
 
   constructor(public readonly list: ListService, private bookService: BookService) {}
 
@@ -17,7 +18,7 @@ export class BookComponent implements OnInit {
     const bookStreamCreator = (query) => this.bookService.getList(query);
 
     this.list.hookToQuery(bookStreamCreator).subscribe((response) => {
-      //this.book = response;
+      this.book = response;
     });
   }
 }
