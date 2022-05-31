@@ -1,6 +1,8 @@
 ﻿using BookStore.AppEntities;
 using BookStore.Books.Dto;
+using BookStore.Permissions;
 using BookStore.Results;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,7 @@ using Volo.Abp.Domain.Repositories;
 
 namespace BookStore.Books
 {
+    [Authorize(BookStorePermissions.Books.List)]
     public class PublisherAppService : ApplicationService, IPublisherAppService
     {
         private readonly IRepository<Book, Guid> _bookRepository;
